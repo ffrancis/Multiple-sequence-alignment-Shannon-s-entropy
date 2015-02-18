@@ -47,6 +47,7 @@ import matplotlib.pyplot as plt
 def shannon_entropy(list_input):
     import math
     unique_base = set(list_input)                           # Get only the unique bases in a column
+    #unique_base = unique_base.discard("-")
     M   =  len(list_input)
     entropy_list = []
     # Number of residues in column
@@ -88,6 +89,18 @@ align_mafft = AlignIO.read("MAFFT012515/_out150126125256989tRydvIXY3nJkf6i4gp7mK
 align_muscle = AlignIO.read("MUSCLE012515/muscle-E20150126-035203-0739-5913603-es.clw", "clustal")
 ##################################################################
 
+
+###################################################################
+### Import "gold standard.clustal" file
+align_gold = AlignIO.read("Test_AAA_smart/PHYLIP.cgi", "phylip")
+align_gold_co = AlignIO.read("Test_AAA_smart/clustalo_aaa_021715.clustal", "clustal")
+align_gold_mafft = AlignIO.read("Test_AAA_smart/mafft_aaa_021715.clustalw", "clustal")
+align_gold_muscle = AlignIO.read("Test_AAA_smart/muscle_aaa_021715.clw", "clustal")
+align_gold_kalign = AlignIO.read("Test_AAA_smart/kalign_aaa_021715.clustalw", "clustal")
+###################################################################
+
+
+
 ###################################################################
 ## Error message if the lengths of the sequences in MSA are not the same
 ###################################################################
@@ -118,8 +131,12 @@ def shannon_entropy_list_msa(alignment_file):
 MAFFT           = shannon_entropy_list_msa(align_mafft)
 CLUSTAL_OMEGA   = shannon_entropy_list_msa(align_clustal)
 MUSCLE          = shannon_entropy_list_msa(align_muscle)
-
-print min(float(s) for s in CLUSTAL_OMEGA)
+GOLD_AA          = shannon_entropy_list_msa(align_gold)
+GOLD_CO          = shannon_entropy_list_msa(align_gold_co)
+GOLD_MAFFT         = shannon_entropy_list_msa(align_gold_mafft)
+GOLD_MUSCLE        = shannon_entropy_list_msa(align_gold_muscle)
+GOLD_KALIGN        = shannon_entropy_list_msa(align_gold_kalign)
+#print min(float(s) for s in CLUSTAL_OMEGA)
 ##################################################################
 # Violin plot of Shannon's entropy
 # A violin plot is a boxplot combined with a kernel density estimate of the probability density function per point.
@@ -128,8 +145,8 @@ print min(float(s) for s in CLUSTAL_OMEGA)
 ##################################################################
 
 # Create a dictonary of the Shannon's entropy list for each MSA
-d = dict( CLUSTAL_OMEGA = CLUSTAL_OMEGA, MAFFT = MAFFT, MUSCLE = MUSCLE)
-
+#d = dict( CLUSTAL_OMEGA = CLUSTAL_OMEGA, MAFFT = MAFFT, MUSCLE = MUSCLE, GOLD=GOLD)
+d = dict( GOLD_AA=GOLD_AA, GOLD_CO=GOLD_CO, GOLD_MAFFT =GOLD_MAFFT,GOLD_MUSCLE=GOLD_MUSCLE, GOLD_KALIGN=GOLD_KALIGN)
 # Create a pandas data frame of the dictionary above
 data = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.iteritems() ]))
 
